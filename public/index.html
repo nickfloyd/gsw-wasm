@@ -9,52 +9,6 @@
   </head>
   <body>
     <h1>WS</h1>
-    <script>
-
-      // Init custom memory
-      // Initial: In pages
-      const wasmMemory = new WebAssembly.Memory({ initial: 2 });
-
-
-      const readMemStr = ( offset, length ) => {
-        const strBuffer = new Uint8Array(wasmMemory.buffer, offset, length);
-        const str = new TextDecoder().decode(strBuffer);
-        
-        // Notify
-        window.dispatchEvent( new CustomEvent('wasmValue', {detail: str}));
-      }
-
-      //Listen for event
-      window.addEventListener('wasmValue', str => {
-        console.log('Received: ', str.detail);
-      });
-
-      const imports = {
-        env: {
-          numLog: console.log,
-          strLog: readMemStr,
-          memory: wasmMemory
-        }
-      };
-
-      //Load Wasm
-      WebAssembly.instantiateStreaming( fetch('/main.wasm'), imports)
-        .then (wasm => {
-          console.log('Wasm Ready.' )
-
-          //Make the wasm object accessible
-          window.wasm = wasm;
-
-          //Log all exported functions
-          console.log(WebAssembly.Module.exports(wasm.module))
-          
-          //Log all imported functions
-          console.log(WebAssembly.Module.imports(wasm.module))
-
-          wasm.instance.exports.getDoubleNumber(20);
-
-          wasm.instance.exports.greet();
-        });
-    </script>
+    <script src="main.js"></script>
   </body>
 </html>
